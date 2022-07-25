@@ -1,0 +1,9 @@
+image: ubuntu:22.04
+
+stages:
+  - test
+
+test:
+  stage: test
+  script: |
+    echo test
