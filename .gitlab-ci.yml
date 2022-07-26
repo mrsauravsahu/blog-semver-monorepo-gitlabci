@@ -14,4 +14,5 @@ before_script:
   - apt update -y && apt install -y --no-install-recommends git ca-certificates
 
 auto-git-tagging:
+  stage: auto-git-tagging
   script: . .cicd/common/auto-git-tagging.sh
