@@ -7,19 +7,23 @@ echo 'AUTO GIT TAGGING'
 
 # FLAVOR=
 GITVERSION='gittools/gitversion:5.10.0-alpine.3.14-6.0'
-VAR_EVENT_NAME='CI_PIPELINE_SOURCE'
-VAR_PR_BRANCH='CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
-VAR_PR_TARGET_BRANCH='CI_MERGE_REQUEST_TARGET_BRANCH_NAME'
-VAR_PUSH_BRANCH='CI_COMMIT_BRANCH'
+if [ "${FLAVOR}" == 'gitlab' ]; then
+  VAR_EVENT_NAME='CI_PIPELINE_SOURCE'
+  VAR_PR_BRANCH='CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
+  VAR_PR_TARGET_BRANCH='CI_MERGE_REQUEST_TARGET_BRANCH_NAME'
+  VAR_PUSH_BRANCH='CI_COMMIT_BRANCH'
+elif [ "${FLAVOR}" == 'github' ]; then
+  VAR_EVENT_NAME='GITHUB_EVENT_NAME'
+  VAR_PR_BRANCH='GITHUB_HEAD_REF'
+  VAR_PR_TARGET_BRANCH='GITHUB_BASE_REF'
+  VAR_PUSH_BRANCH='GITHUB_REF_NAME'
+else
+  echo "ERROR: Trying auto tag on an unknown flavor of source control provider" >&2
+  exit 1
+fi
 
 echo 'Fetch all history for all tags and branches'
 git fetch --all && git checkout develop && git checkout main
-
-echo 'Check base ref'
-echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME='$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'"
-echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME='$CI_MERGE_REQUEST_TARGET_BRANCH_NAME'"
-echo "CI_COMMIT_BRANCH='$CI_COMMIT_BRANCH'"
-echo "CI_PIPELINE_SOURCE='$CI_PIPELINE_SOURCE'"
 
 echo 'Calculate changed services'
 if [ "${!VAR_EVENT_NAME}" = 'push' ]; then
@@ -48,6 +52,8 @@ else
     service_versions_txt+="- ${svc} - v${service_version}\n"
   done
 fi
+
+echo "${service_versions_txt}"
 
 # echo 'Update PR description'
 # PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
