@@ -11,6 +11,9 @@ stages:
   # - calculate-service-versions
   # - update-pr-description
 
+before_script:
+  - apt update -y && apt install -y git
+
 # Fetch all history for all tags and branches
 fetch-all-tags:
   stage: fetch-all-tags
