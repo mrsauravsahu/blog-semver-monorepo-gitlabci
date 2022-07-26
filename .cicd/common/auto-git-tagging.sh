@@ -34,7 +34,8 @@ else
   DIFF_SOURCE="${!VAR_PR_TARGET_BRANCH}"
 fi
 
-changed_services=(`(git diff origin/develop origin/feat/add-gitlab-ci --name-only | grep -o '^apps/[a-zA-Z-]*') || echo '') | grep -o '^apps/[a-zA-Z-]*' | sort | uniq`)
+file_diff_list=`(git diff "origin/${DIFF_SOURCE}" "origin/${DIFF_DEST}" --name-only | grep -o '^apps/[a-zA-Z-]*') || echo ''`
+changed_services=(`echo "${file_diff_list}" | grep -o '^apps/[a-zA-Z-]*' | sort | uniq`)
 
 echo 'Checkout to branch'
 git checkout "${DIFF_DEST}"
