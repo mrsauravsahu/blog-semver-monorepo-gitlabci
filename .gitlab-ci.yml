@@ -1,11 +1,7 @@
 image: ubuntu:22.04
 
 variables: 
-  GITVERSION: 'gittools/gitversion:5.10.0-alpine.3.14-6.0'
-  VAR_EVENT_NAME: 'CI_PIPELINE_SOURCE'
-  VAR_PR_BRANCH: 'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
-  VAR_PR_TARGET_BRANCH: 'CI_MERGE_REQUEST_TARGET_BRANCH_NAME'
-  VAR_PUSH_BRANCH: 'CI_COMMIT_BRANCH'
+  FLAVOR: 'gitlab'
 
 stages:
   - auto-git-tagging
@@ -15,4 +11,7 @@ before_script:
 
 auto-git-tagging:
   stage: auto-git-tagging
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'push'
   script: . .cicd/common/auto-git-tagging.sh
