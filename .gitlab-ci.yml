@@ -13,10 +13,12 @@ stages:
 
 # Fetch all history for all tags and branches
 fetch-all-tags:
+  stage: fetch-all-tags
   script: git fetch --all && git checkout develop && git checkout main
 
 # Check base ref
 check-base-ref:
+  stage: check-base-ref
   script: |
     # echo "baseref='$GITHUB_BASE_REF' ref='$GITHUB_REF' headref='$GITHUB_HEAD_REF' refname='$GITHUB_REF_NAME' eventname='$GITHUB_EVENT_NAME'"
     echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME='$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'"
@@ -24,6 +26,7 @@ check-base-ref:
 
 # Calculate changed services
 # calculate-changed-services:
+#   stage: calculate-changed-services
 #   script: |
 #     if [ "${GITHUB_EVENT_NAME}" = 'push' ]; then
 #       DIFF_DEST="${GITHUB_REF_NAME}"
@@ -43,10 +46,12 @@ check-base-ref:
 
 # # Checkout to branch
 # checkout-to-branch:
+#   stage: checkout-to-branch
 #   script: git checkout ${{ steps.calculate_changed_services.outputs.diff_dest }}
 
 # # Calculate service versions
 # calculate-service-versions:
+#   stage: calculate-service-versions
 #   script: |
 #     changed_services=( ${{ fromJSON(steps.calculate_changed_services.outputs.changed_services) }} )
 #     if [ "${#changed_services[@]}" = "0" ]; then
@@ -71,6 +76,7 @@ check-base-ref:
 
 # # Update PR description
 # update-pr-description:
+#   stage: update-pr-description
 #   rules:
 #   - if: "false" # ${{ github.event_name == 'pull_request' }}
 #   script: |
