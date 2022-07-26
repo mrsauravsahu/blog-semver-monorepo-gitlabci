@@ -35,8 +35,7 @@ else
 fi
 
 file_diff_list=`(git diff "origin/${DIFF_SOURCE}" "origin/${DIFF_DEST}" --name-only | grep -o '^apps/[a-zA-Z-]*') || echo ''`
-echo "${file_diff_list}"
-changed_services=(`echo "${file_diff_list}" | grep -o '^apps/[a-zA-Z-]*' | sort | uniq`)
+changed_services=(`echo "${file_diff_list}" | grep -o '^apps/[a-zA-Z-]*' | sort | uniq`) || true
 
 echo 'Checkout to branch'
 git checkout "${DIFF_DEST}"
