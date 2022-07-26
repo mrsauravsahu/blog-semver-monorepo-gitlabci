@@ -12,7 +12,7 @@ stages:
   # - update-pr-description
 
 before_script:
-  - apt update -y && apt install -y --no-install-recommends git
+  - apt update -y && apt install -y --no-install-recommends git ca-certificates
 
 # Fetch all history for all tags and branches
 fetch-all-tags:
