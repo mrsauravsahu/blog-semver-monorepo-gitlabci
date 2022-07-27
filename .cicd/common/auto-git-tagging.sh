@@ -47,8 +47,8 @@ else
   service_versions_txt="## service changes\n"
   for svc in "${changed_services[@]}"; do
     echo "calculation for ${svc}"
-    docker run --rm -v "$(pwd):/repo" ${{ env.GITVERSION }} /repo /config "/repo/${svc}/.gitversion.yml"
-    gitversion_calc=$(docker run --rm -v "$(pwd):/repo" ${{ env.GITVERSION }} /repo /config "/repo/${svc}/.gitversion.yml")
+    docker run --rm -v "$(pwd):/repo" $GITVERSION /repo /config "/repo/${svc}/.gitversion.yml"
+    gitversion_calc=$(docker run --rm -v "$(pwd):/repo" $GITVERSION /repo /config "/repo/${svc}/.gitversion.yml")
     service_version=$(echo "${gitversion_calc}" | jq -r '.MajorMinorPatch')
     echo "${gitversion_calc}"
     service_versions_txt+="- ${svc} - v${service_version}\n"
