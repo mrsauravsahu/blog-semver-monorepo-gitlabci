@@ -1,4 +1,4 @@
-image: ubuntu:22.04
+image: docker:20.10.3
 
 variables: 
   FLAVOR: 'gitlab'
@@ -14,4 +14,6 @@ auto-git-tagging:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'push'
-  script: . .cicd/common/auto-git-tagging.sh
+  script:
+    - apk add bash git
+    - . .cicd/common/auto-git-tagging.sh
