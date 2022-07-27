@@ -1,3 +1,10 @@
+#!/usr/bin/env bash
+
+set -o xtrace
+set -o errexit
+
+echo 'MonoTools: Service Version Calculator'
+
 GITVERSION='gittools/gitversion:5.10.0-alpine.3.14-6.0'
 
 BRANCH="$1"
@@ -5,7 +12,7 @@ shift
 SERVICES=("$@")
 
 echo 'Checkout to branch'
-git checkout "${BRANCH}"
+git fetch --all && git checkout "${BRANCH}"
 # try to unshallow if CI system performed shallow clone
 git pull --unshallow || true
 
