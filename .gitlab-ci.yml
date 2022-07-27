@@ -14,8 +14,8 @@ stages:
 before_script:
   - apk add bash git jq ca-certificates
 
-auto-git-tagging:
-  stage: auto-git-tagging
+calc-changed-services:
+  stage: calc-changed-services
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'main'
