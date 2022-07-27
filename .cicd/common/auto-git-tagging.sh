@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Expected to be run on Ubuntu docker images
 
 set -o xtrace
 set -o errexit
