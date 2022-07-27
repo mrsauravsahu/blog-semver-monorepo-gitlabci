@@ -3,6 +3,10 @@ workflow:
   rules:
     - when: always
 
+# https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-the-docker-executor
+services:
+  - docker:20.10.3-dind
+
 stages:
   - test
   - build
