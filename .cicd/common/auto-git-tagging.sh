@@ -40,6 +40,8 @@ changed_services=(`echo "${file_diff_list}" | grep -o '^apps/[a-zA-Z-]*' | sort 
 
 echo 'Checkout to branch'
 git checkout "${DIFF_DEST}"
+# try to unshallow if CI system performed shallow clone
+git pull --unshallow || true
 
 echo 'Calculate service versions'
 if [ "${#changed_services[@]}" = "0" ]; then
