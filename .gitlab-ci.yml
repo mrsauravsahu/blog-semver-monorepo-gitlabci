@@ -34,7 +34,7 @@ gateway:
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
     strategy: depend
-  variables: 
+  variables:
     SERVICE: gateway
 
 internal-service:
@@ -48,5 +48,5 @@ internal-service:
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
     strategy: depend
-  variables: 
+  variables:
     SERVICE: internal-service
