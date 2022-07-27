@@ -36,3 +36,5 @@ fi
 file_diff_list=`(git diff "origin/${DIFF_SOURCE}" "origin/${DIFF_DEST}" --name-only | grep -o '^apps/[a-zA-Z-]*') || echo ''`
 changed_services=(`echo "${file_diff_list}" | grep -o '^apps/[a-zA-Z-]*' | sort | uniq`) || true
 echo "${changed_services[@]}"
+
+export MONOTOOLS_CHANGED_SERVICES="${changed_services[@]}"

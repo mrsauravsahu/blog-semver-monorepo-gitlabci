@@ -25,9 +25,8 @@ calc-changed-services:
 
 gateway:
   stage: build
-  only:
-    changes:
-    - apps/gateway/**
+  rules:
+    - if: $MONOTOOLS_CHANGED_SERVICES =~ /apps/gateway/
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
   variables: 
@@ -35,9 +34,8 @@ gateway:
 
 internal-service:
   stage: build
-  only:
-    changes:
-    - apps/internal-service/**
+  rules:
+    - if: $MONOTOOLS_CHANGED_SERVICES =~ /apps/internal-service/
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
   variables: 
