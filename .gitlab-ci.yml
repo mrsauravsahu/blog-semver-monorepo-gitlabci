@@ -1,7 +1,12 @@
 image: docker:20.10.3
 
+# https://forum.gitlab.com/t/error-during-connect-post-http-docker-2375-v1-40-auth-dial-tcp-lookup-docker-on-169-254-169-254-no-such-host/28678/6
+services:
+  - docker:20.10.3-dind
+
 variables: 
   FLAVOR: 'gitlab'
+  DOCKER_HOST: tcp://localhost:2375/
 
 stages:
   - auto-git-tagging
