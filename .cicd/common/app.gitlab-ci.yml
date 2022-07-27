@@ -1,3 +1,5 @@
+image: docker:20.10.3
+
 # https://stackoverflow.com/a/70420880
 workflow:
   rules:
@@ -13,13 +15,15 @@ stages:
   - push-image
   - tag
 
+before_script:
+  - apk add bash git jq ca-certificates
+
 test:
   stage: test
   script: echo "todo 😂️"
 
 build:
   stage: build
-  image: docker:20.10.3
   script: docker build --build-arg NODE_VERSION=16.16.0-alpine --build-arg SERVICE=$SERVICE -t monotools/apps/${SERVICE}:0.1.0 -f .cicd/common/node-base.dockerfile .
 
 push-image:
