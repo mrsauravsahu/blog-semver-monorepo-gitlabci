@@ -33,6 +33,7 @@ gateway:
         compare_to: 'refs/heads/develop'
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
+    strategy: depend
   variables: 
     SERVICE: gateway
 
@@ -46,5 +47,6 @@ internal-service:
         compare_to: 'refs/heads/develop'
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
+    strategy: depend
   variables: 
     SERVICE: internal-service
