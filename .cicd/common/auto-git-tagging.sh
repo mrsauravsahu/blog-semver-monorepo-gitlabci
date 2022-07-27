@@ -2,6 +2,7 @@
 # Expected to be run on Ubuntu docker images
 
 set -o xtrace
+set -o errexit
 
 echo 'AUTO GIT TAGGING'
 
