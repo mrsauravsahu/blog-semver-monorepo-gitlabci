@@ -7,7 +7,7 @@ stages:
   - auto-git-tagging
 
 before_script:
-  - apt update -y && apt install -y --no-install-recommends git ca-certificates
+  - apk add bash git ca-certificates
 
 auto-git-tagging:
   stage: auto-git-tagging
@@ -15,5 +15,4 @@ auto-git-tagging:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'push'
   script:
-    - apk add bash git
-    - . .cicd/common/auto-git-tagging.sh
+    - bash .cicd/common/auto-git-tagging.sh
