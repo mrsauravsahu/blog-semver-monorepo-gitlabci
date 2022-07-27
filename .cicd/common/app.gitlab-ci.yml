@@ -1,0 +1,22 @@
+stages:
+  - test
+  - build
+  - push-image
+  - tag
+
+test:
+  stage: test
+  script: echo "todo 😂️"
+
+build:
+  stage: build
+  image: docker:20.10.3
+  script: docker build --build-arg NODE_VERSION=16.16.0-alpine --build-arg SERVICE=$SERVICE -t monotools/apps/${SERVICE}:0.1.0 -f .cicd/common/node-base.dockerfile .
+
+push-image:
+  stage: push-image
+  script: echo "not doing it in this test app; but push to a Container Registry"
+
+tag:
+  stage: tag
+  script: bash .cicd/common/calc-service-version.sh $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $SERVICE
