@@ -7,7 +7,7 @@ stages:
   - auto-git-tagging
 
 before_script:
-  - apk add bash git ca-certificates
+  - apk add bash git jq ca-certificates
 
 auto-git-tagging:
   stage: auto-git-tagging
