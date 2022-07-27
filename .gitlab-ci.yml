@@ -26,7 +26,11 @@ calc-changed-services:
 gateway:
   stage: build
   rules:
-    - if: $MONOTOOLS_CHANGED_SERVICES =~ /apps\/gateway/
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        paths:
+          - apps/gateway/**
+        compare_to: 'refs/heads/develop'
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
   variables: 
@@ -35,7 +39,11 @@ gateway:
 internal-service:
   stage: build
   rules:
-    - if: $MONOTOOLS_CHANGED_SERVICES =~ /apps\/internal-service/
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        paths:
+          - apps/internal-service/**
+        compare_to: 'refs/heads/develop'
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
   variables: 
