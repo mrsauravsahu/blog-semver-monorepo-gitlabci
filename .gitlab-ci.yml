@@ -8,23 +8,13 @@ variables:
   FLAVOR: 'gitlab'
 
 stages:
-  - calc-changed-services
-  - build
+  - service-ci
 
 before_script:
   - apk add bash git jq ca-certificates
 
-calc-changed-services:
-  stage: calc-changed-services
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'main'
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'develop'
-  script:
-    - bash .cicd/common/calc-changed-services.sh
-
 gateway:
-  stage: build
+  stage: service-ci
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       changes:
@@ -43,7 +33,7 @@ gateway:
     SERVICE: gateway
 
 internal-service:
-  stage: build
+  stage: service-ci
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       changes:
