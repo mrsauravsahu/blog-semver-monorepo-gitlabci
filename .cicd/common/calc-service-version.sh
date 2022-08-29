@@ -14,6 +14,8 @@ SERVICES=("$@")
 echo 'Checkout to branch'
 git fetch --all && git checkout "${BRANCH}"
 # try to unshallow if CI system performed shallow clone
+git checkout main && git checkout -
+git checkout develop && git checkout -
 git pull --unshallow || true
 
 echo 'Calculate service versions'
