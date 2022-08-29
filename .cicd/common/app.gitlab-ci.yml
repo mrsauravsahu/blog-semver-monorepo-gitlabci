@@ -45,4 +45,4 @@ tag:
     git config user.name 'Gitlab Bot'
     git config user.email 'bot@noreply.gitlab.com'
     git tag -a "$SERVICE/${SERVICE_VERSION}" -m "$SERVICE/${SERVICE_VERSION}"
-    git push origin "$SERVICE/${SERVICE_VERSION}"
+    git push "https://${GITLAB_USER_LOGIN}:${CI_GIT_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" "$SERVICE/${SERVICE_VERSION}"
