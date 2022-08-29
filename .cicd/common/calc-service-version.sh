@@ -30,6 +30,7 @@ else
     service_version=$(echo "${gitversion_calc}" | jq -r '.MajorMinorPatch')
     echo "${gitversion_calc}"
     service_versions_txt+="- ${svc} - v${service_version}\n"
+    echo "SERVICE_VERSION=${service_version}" > versioning.env
   done
 fi
 
