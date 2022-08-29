@@ -41,5 +41,8 @@ calculate-version:
 tag:
   stage: tag-build
   script: |
+    # https://forum.gitlab.com/t/project-access-tokens-what-is-the-bot-accounts-mail-address-domain-on-gitlab-saas/68165/2
+    git config user.name 'Gitlab Bot'
+    git config user.email 'bot@noreply.gitlab.com'
     git tag -a "$SERVICE/${SERVICE_VERSION}" -m "$SERVICE/${SERVICE_VERSION}"
     git push origin "$SERVICE/${SERVICE_VERSION}"
