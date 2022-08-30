@@ -26,6 +26,7 @@ gateway:
         paths:
           - apps/gateway/**
         compare_to: 'refs/heads/main'
+    - if: $CI_PIPELINE_SOURCE == 'push' && ($CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME ~= "/^release/" || $CI_COMMIT_REF_NAME ~= "/^hotfix/")
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
     strategy: depend
@@ -45,10 +46,7 @@ internal-service:
         paths:
           - apps/internal-service/**
         compare_to: 'refs/heads/main'
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME == "main"
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME == "develop"
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME ~= "/^release/"
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME ~= "/^hotfix/"
+    - if: $CI_PIPELINE_SOURCE == 'push' && ($CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME ~= "/^release/" || $CI_COMMIT_REF_NAME ~= "/^hotfix/")
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
     strategy: depend
