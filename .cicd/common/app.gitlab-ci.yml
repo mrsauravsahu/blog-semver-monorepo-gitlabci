@@ -33,8 +33,9 @@ push-image:
 
 calculate-version:
   stage: calculate-version
-  script: |
-    bash .cicd/common/calc-service-version.sh $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $SERVICE
+  environment:
+    DIFF_DEST: $CI_COMMIT_REF_NAME
+  script: bash .cicd/common/calc-service-version.sh $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $SERVICE
   artifacts:
     reports:
       dotenv: versioning.env
@@ -42,11 +43,7 @@ calculate-version:
 tag:
   stage: tag-build
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'push'
-    - if: $CI_COMMIT_REF_NAME =~ "/^release/"
-    - if: $CI_COMMIT_REF_NAME =~ "/^hotfix/"
-    - if: $CI_COMMIT_REF_NAME =~ "/^main/"
-    - if: $CI_COMMIT_REF_NAME =~ "/^develop/"
+    - if: $CI_PIPELINE_SOURCE == 'push' && ( $CI_COMMIT_REF_NAME =~ "/^release/" || $CI_COMMIT_REF_NAME =~ "/^hotfix/" || $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "develop" )
   script: |
     # https://forum.gitlab.com/t/project-access-tokens-what-is-the-bot-accounts-mail-address-domain-on-gitlab-saas/68165/2
     git config user.name 'Gitlab Bot'

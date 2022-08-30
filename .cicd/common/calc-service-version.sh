@@ -6,6 +6,11 @@ set -o errexit
 echo 'MonoTools: Service Version Calculator'
 
 GITVERSION='gittools/gitversion:5.10.0-alpine.3.14-6.0'
+GITVERSION_TAG_PROPERTY_DEFAULT='.SemVer'
+GITVERSION_TAG_PROPERTY_DEVELOP='.SemVer'
+GITVERSION_TAG_PROPERTY_RELEASE='.SemVer'
+GITVERSION_TAG_PROPERTY_HOTFIX='.SemVer'
+GITVERSION_TAG_PROPERTY_MAIN='.MajorMinorPatch'
 
 BRANCH="$1"
 shift
@@ -30,17 +35,18 @@ else
     service_version=$(echo "${gitversion_calc}" | jq -r '.MajorMinorPatch')
     echo "${gitversion_calc}"
     service_versions_txt+="- ${svc} - v${service_version}\n"
+    echo "DIFF_DEST '$DIFF_DEST'"
+    GITVERSION_TAG_PROPERTY_NAME="GITVERSION_TAG_PROPERTY_$(echo "${DIFF_DEST}" | sed 's|/.*$||' | tr '[[:lower:]]' '[[:upper:]]')"
+    GITVERSION_TAG_PROPERTY=${!GITVERSION_TAG_PROPERTY_NAME}
+    svc_without_prefix="$(echo "${svc}" | sed "s|^apps/||")"
+    if [ "${GITVERSION_TAG_PROPERTY}" != ".MajorMinorPatch" ]; then
+        previous_commit_count=$(git tag -l | grep "^${svc_without_prefix}/v$(echo "${gitversion_calc}" | jq -r ".MajorMinorPatch")-$(echo "${gitversion_calc}" | jq -r ".PreReleaseLabel")" | grep -o -E '\.[0-9]+$' | grep -o -E '[0-9]+$' | sort -nr | head -1)
+        next_commit_count=$((previous_commit_count+1))
+        version_without_count=$(echo "${gitversion_calc}" | jq -r "[.MajorMinorPatch,.PreReleaseLabelWithDash] | join(\"\")")
+        full_service_version="${version_without_count}.${next_commit_count}"
+    else
     echo "SERVICE_VERSION=v${service_version}" > versioning.env
   done
 fi
 
 echo "${service_versions_txt}"
-
-# echo 'Update PR description'
-# PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-# # from https://github.com/actions/checkout/issues/58#issuecomment-614041550
-# jq -nc '{"body": "${{ fromJSON(steps.calculate_service_versions.outputs.PR_BODY) }}" }' | \
-# curl -sL  -X PATCH -d @- \
-#   -H "Content-Type: application/json" \
-#   -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-#   "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER"
