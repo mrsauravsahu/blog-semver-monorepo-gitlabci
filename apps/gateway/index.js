@@ -9,6 +9,7 @@ const server = http.createServer((req, res) => {
   res.end();
 })
 
+const host = process.env.HOST || '0.0.0.0'
 const port  = process.env.PORT || 80
-console.log(`Starting server at http://localhost:${port}`)
-server.listen(port, '0.0.0.0')
+console.log(`Server listening at http://${host}:${port}`)
+server.listen(port, host)

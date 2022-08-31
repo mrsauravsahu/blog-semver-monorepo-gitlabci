@@ -1,0 +1,52 @@
+image: docker:20.10.3
+
+# https://stackoverflow.com/a/70420880
+workflow:
+  rules:
+    - when: always
+
+# https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-the-docker-executor
+services:
+  - docker:20.10.3-dind
+
+stages:
+  - test
+  - build
+  - push-image
+  - calculate-version
+  - tag-build
+
+before_script:
+  - apk add bash git jq ca-certificates
+
+test:
+  stage: test
+  script: echo "todo 😂️"
+
+build:
+  stage: build
+  script: docker build --build-arg NODE_VERSION=16.16.0-alpine --build-arg SERVICE=$SERVICE -t monotools/apps/${SERVICE}:0.1.0 -f .cicd/common/node-base.dockerfile .
+
+push-image:
+  stage: push-image
+  script: echo "not doing it in this test app; but push to a Container Registry"
+
+calculate-version:
+  stage: calculate-version
+  variables:
+    DIFF_DEST: $CI_COMMIT_REF_NAME
+  script: bash .cicd/common/calc-service-version.sh $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $SERVICE
+  artifacts:
+    reports:
+      dotenv: versioning.env
+
+tag:
+  stage: tag-build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'push' && ( $CI_COMMIT_REF_NAME =~ "/^release/" || $CI_COMMIT_REF_NAME =~ "/^hotfix/" || $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "develop" )
+  script: |
+    # https://forum.gitlab.com/t/project-access-tokens-what-is-the-bot-accounts-mail-address-domain-on-gitlab-saas/68165/2
+    git config user.name 'Gitlab Bot'
+    git config user.email 'bot@noreply.gitlab.com'
+    git tag -a "$SERVICE/${SERVICE_VERSION}" -m "$SERVICE/${SERVICE_VERSION}"
+    git push "https://${MONOTOOLS_GITLAB_TOKEN_NAME}:${MONOTOOLS_GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" "$SERVICE/${SERVICE_VERSION}"
