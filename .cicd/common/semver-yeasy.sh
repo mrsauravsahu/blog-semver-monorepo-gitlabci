@@ -120,7 +120,8 @@ calculate-version)
                 full_service_version="${service_version}"
             fi
             echo "SERVICE_VERSION=v${full_service_version}" > versioning.env
-        done
+            done
+        fi
     fi
     # fix multiline variables
     # from: https://github.com/actions/create-release/issues/64#issuecomment-638695206
