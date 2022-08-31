@@ -33,7 +33,7 @@ push-image:
 
 calculate-version:
   stage: calculate-version
-  environment:
+  variables:
     DIFF_DEST: $CI_COMMIT_REF_NAME
   script: bash .cicd/common/calc-service-version.sh $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $SERVICE
   artifacts:
