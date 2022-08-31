@@ -14,6 +14,7 @@ stages:
   - build
   - push-image
   - calculate-version
+  - check-env
   - tag-build
 
 before_script:
@@ -40,6 +41,10 @@ calculate-version:
   artifacts:
     reports:
       dotenv: versioning.env
+
+check-env:
+  stage: check-env
+  script: env
 
 tag:
   stage: tag-build
