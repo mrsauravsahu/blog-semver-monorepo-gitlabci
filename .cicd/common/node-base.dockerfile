@@ -1,0 +1,15 @@
+ARG NODE_VERSION
+
+FROM node:${NODE_VERSION}
+
+ARG SERVICE
+
+WORKDIR /app
+
+COPY ./apps/${SERVICE}/index.js ./apps/${SERVICE}/package.json ./${SERVICE}/
+
+ENV SERVICE ${SERVICE}
+ENV HOST 0.0.0.0
+ENV PORT 80
+
+ENTRYPOINT node ./${SERVICE}/index.js
