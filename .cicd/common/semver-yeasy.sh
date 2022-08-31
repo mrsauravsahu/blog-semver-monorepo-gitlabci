@@ -102,20 +102,25 @@ calculate-version)
         if [ "${#changed_services[@]}" = "0" ]; then
         service_versions_txt+='No services changed\n'
         else
-        service_versions_txt="## impact surface\n"
-        for svc in "${changed_services[@]}"; do
+            for svc in "${SEMVERYEASY_CHANGED_SERVICES[@]}"; do
             echo "calculation for ${svc}"
             CONFIG_FILE=${!CONFIG_FILE_VAR//\$svc/$svc}
             docker run --rm -v "$(pwd):/repo" ${GITVERSION} /repo /config "/repo/${svc}/.gitversion.yml"
             gitversion_calc=$(docker run --rm -v "$(pwd):/repo" ${GITVERSION} /repo /config "/repo/${svc}/.gitversion.yml")
-            GITVERSION_TAG_PROPERTY_NAME="GITVERSION_TAG_PROPERTY_PULL_REQUESTS"
+            GITVERSION_TAG_PROPERTY_NAME="GITVERSION_TAG_PROPERTY_$(echo "${DIFF_DEST}" | sed 's|/.*$||' | tr '[[:lower:]]' '[[:upper:]]')"
             GITVERSION_TAG_PROPERTY=${!GITVERSION_TAG_PROPERTY_NAME}
             service_version=$(echo "${gitversion_calc}" | jq -r "[${GITVERSION_TAG_PROPERTY}] | join(\"\")")
-            service_versions_txt+="- ${svc} - v${service_version}\n"
-            # TODO: Allow multiple apps to be versioned in gitlab
+            svc_without_prefix="$(echo "${svc}" | sed "s|^apps/||")"
+            if [ "${GITVERSION_TAG_PROPERTY}" != ".MajorMinorPatch" ]; then
+                previous_commit_count=$(git tag -l | grep "^${svc_without_prefix}/v$(echo "${gitversion_calc}" | jq -r ".MajorMinorPatch")-$(echo "${gitversion_calc}" | jq -r ".PreReleaseLabel")" | grep -o -E '\.[0-9]+$' | grep -o -E '[0-9]+$' | sort -nr | head -1)
+                next_commit_count=$((previous_commit_count+1))
+                version_without_count=$(echo "${gitversion_calc}" | jq -r "[.MajorMinorPatch,.PreReleaseLabelWithDash] | join(\"\")")
+                full_service_version="${version_without_count}.${next_commit_count}"
+            else
+                full_service_version="${service_version}"
+            fi
             echo "SERVICE_VERSION=v${full_service_version}" > versioning.env
         done
-        fi
     fi
     # fix multiline variables
     # from: https://github.com/actions/create-release/issues/64#issuecomment-638695206

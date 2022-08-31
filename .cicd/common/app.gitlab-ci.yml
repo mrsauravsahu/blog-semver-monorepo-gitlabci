@@ -44,7 +44,10 @@ calculate-version:
 tag:
   stage: tag-build
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'push' && ( $CI_COMMIT_REF_NAME =~ "/^release/" || $CI_COMMIT_REF_NAME =~ "/^hotfix/" || $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "develop" )
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME == "develop"
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME =~ "/^release/"
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME =~ "/^hotfix/"
   script: |
     # https://forum.gitlab.com/t/project-access-tokens-what-is-the-bot-accounts-mail-address-domain-on-gitlab-saas/68165/2
     git config user.name 'Gitlab Bot'

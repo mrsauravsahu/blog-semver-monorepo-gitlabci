@@ -27,13 +27,9 @@ gateway:
           - apps/gateway/**
         compare_to: 'refs/heads/main'
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME == "main"
-      when: always
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME == "develop"
-      when: always
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME =~ "/^release/"
-      when: always
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_REF_NAME =~ "/^hotfix/"
-      when: always
   trigger:
     include: .cicd/common/app.gitlab-ci.yml
     strategy: depend
