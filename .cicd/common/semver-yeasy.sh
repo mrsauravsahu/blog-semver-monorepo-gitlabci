@@ -5,15 +5,16 @@ echo 'Monotools: semver-yeasy'
 mode=$1
 
 # TODO: To complete this, check if if conditions use these env vars in the workflow 
+GITVERSION='gittools/gitversion:5.10.0-alpine.3.14-6.0'
 # GITVERSION_TAG_PROPERTY_PULL_REQUESTS='.SemVer'
 # GITVERSION_TAG_PROPERTY_DEFAULT='.SemVer'
 # GITVERSION_TAG_PROPERTY_DEVELOP='.SemVer'
 # GITVERSION_TAG_PROPERTY_RELEASE='.SemVer'
 # GITVERSION_TAG_PROPERTY_HOTFIX='.SemVer'
 # GITVERSION_TAG_PROPERTY_MAIN='.MajorMinorPatch'
-# GITVERSION_REPO_TYPE='MONOREPO'
+GITVERSION_REPO_TYPE='MONOREPO'
 # GITVERSION_CONFIG_SINGLE_APP='/repo/.cicd/common/.gitversion.yml'
-# GITVERSION_CONFIG_MONOREPO='/repo/apps/${svc}/.gitversion.yml'
+GITVERSION_CONFIG_MONOREPO='/repo/apps/${svc}/.gitversion.yml'
 
 case "${mode}" in
 
@@ -27,7 +28,12 @@ checkout)
 ;;
 
 gitlab_checkout)
-    env
+    if [ "${CI_PIPELINE_SOURCE}" = 'push' ]; then
+        DIFF_DEST="${CI_COMMIT_REF_NAME}"
+    else
+        DIFF_DEST="${GITHUB_HEAD_REF}"
+    fi
+    git checkout ${CI_COMMIT_REF_NAME}
 ;;
 
 changed)
@@ -106,6 +112,8 @@ calculate-version)
             GITVERSION_TAG_PROPERTY=${!GITVERSION_TAG_PROPERTY_NAME}
             service_version=$(echo "${gitversion_calc}" | jq -r "[${GITVERSION_TAG_PROPERTY}] | join(\"\")")
             service_versions_txt+="- ${svc} - v${service_version}\n"
+            # TODO: Allow multiple apps to be versioned in gitlab
+            echo "SERVICE_VERSION=v${full_service_version}" > versioning.env
         done
         fi
     fi
