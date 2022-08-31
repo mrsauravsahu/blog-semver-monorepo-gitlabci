@@ -35,7 +35,9 @@ calculate-version:
   stage: calculate-version
   variables:
     DIFF_DEST: $CI_COMMIT_REF_NAME
-  script: bash .cicd/common/calc-service-version.sh $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $SERVICE
+  script: |
+    bash .cicd/common/calc-service-version.sh gitlab_checkout
+    bash .cicd/common/calc-service-version.sh $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $SERVICE
   artifacts:
     reports:
       dotenv: versioning.env
